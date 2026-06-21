@@ -331,10 +331,32 @@ data_kind = st.sidebar.radio(
 uploaded = st.sidebar.file_uploader("CSV 업로드", type=["csv"])
 
 if uploaded:
+
     df = pd.read_csv(uploaded)
+
+    # 교수님 measurements.csv 형식 자동 변환
+    if all(col in df.columns for col in ["x1", "x2", "x3", "x4", "x5"]):
+
+        temp = []
+
+        for idx, row in df.iterrows():
+
+            subgroup = idx + 1
+
+            for col in ["x1", "x2", "x3", "x4", "x5"]:
+
+                temp.append({
+                    "subgroup": subgroup,
+                    "value": row[col]
+                })
+
+        df = pd.DataFrame(temp)
+
 else:
+
     if data_kind == "계량형 데이터":
         df = make_sample_variable()
+
     else:
         df = make_sample_attribute()
 
